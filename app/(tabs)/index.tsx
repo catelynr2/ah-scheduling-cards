@@ -1,74 +1,145 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { useFonts } from "expo-font";
+import {
+  useWindowDimensions,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function SchedulingCards() {
+  const { width } = useWindowDimensions();
 
-export default function HomeScreen() {
+  const [fontsLoaded] = useFonts({
+    montserrat600: require("@/assets/fonts/Montserrat-SemiBold.ttf"),
+    montserrat500: require("@/assets/fonts/Montserrat-Medium.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+  const isWide = width > 604;
+  const borderColor = "#C5C7C7";
+
+  const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: "#2E31311A",
+      alignItems: "center",
+      paddingTop: 150,
+    },
+    schedulingCardsView: {
+      height: "auto",
+      width: "95%",
+      backgroundColor: "#fff",
+      flexDirection: isWide ? "row" : "column",
+      paddingHorizontal: 15,
+      paddingVertical: 25,
+      marginBottom: 1,
+    },
+    cardContent: {
+      flex: isWide ? 1 : undefined,
+      maxWidth: isWide ? "60%" : "100%",
+      flexDirection: "row",
+    },
+    iconContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 15,
+      backgroundColor: "#fff",
+      borderColor,
+      borderRadius: 100,
+      borderWidth: 1,
+      width: 64,
+      height: 64,
+    },
+    icon: {
+      width: 18.52,
+      height: 15,
+    },
+    textContainer: {
+      flex: 1,
+    },
+    title: {
+      fontSize: 16,
+      fontFamily: "montserrat600",
+      paddingBottom: 10,
+      color: "#191C1C",
+    },
+    description: {
+      flex: 1,
+      fontSize: 14,
+      fontFamily: "montserrat500",
+      lineHeight: 20,
+      color: "#454747",
+    },
+    button: {
+      flex: isWide ? undefined : 1,
+      paddingHorizontal: 25,
+      marginTop: 15,
+      minHeight: 44,
+      maxHeight: 44,
+      borderRadius: 50,
+      borderWidth: 1,
+      borderColor,
+      justifyContent: "center",
+      alignItems: "center",
+      marginLeft: isWide ? 15 : 0,
+    },
+    buttonText: {
+      color: "#006298",
+      fontSize: 14,
+    },
+  });
+
+  type schedulingTypes = {
+    icon: number;
+    title: string;
+    description: string;
+    buttonText: string;
+  };
+
+  const schedulingData: schedulingTypes[] = [
+    {
+      icon: require("@/assets/images/videocam.png"),
+      title: "Virtual Urgent Care",
+      description:
+        "Available 24/7 to diagnose, treat, and prescribe medications for your urgent health needs.",
+      buttonText: "Get Started",
+    },
+    {
+      icon: require("@/assets/images/cottage.png"),
+      title: "At Home Urgent Care",
+      description:
+        "Get care in the comfort of your own home with our medical team from DispatchHealth.",
+      buttonText: "Request a Visit",
+    },
+  ];
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      {schedulingData?.map(
+        ({ icon, title, description, buttonText }: schedulingTypes, index) => {
+          return (
+            <View key={index} style={styles.schedulingCardsView}>
+              <View style={styles.cardContent}>
+                <View style={styles.iconContainer}>
+                  <Image source={icon} style={styles.icon} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>{title}</Text>
+                  <Text style={styles.description}>{description}</Text>
+                </View>
+              </View>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>{buttonText}</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }
+      )}
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
