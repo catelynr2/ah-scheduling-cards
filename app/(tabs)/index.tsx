@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SchedulingCards() {
-  // const { width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const [fontsLoaded] = useFonts({
     montserrat600: require("@/assets/fonts/Montserrat-SemiBold.ttf"),
